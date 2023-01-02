@@ -38,7 +38,7 @@ Nếu gặp phải lỗi này:
 -   Vào xampp chọn config của tomcat chọn **web.xml** gán code sau:
 -   Dán vào dưới cái khoanh đỏ này
 
-![Lỗi](/src/img/Screenshot_2.png 'Lỗi')
+![Lỗi](/img/Screenshot_2.png 'Lỗi')
 
 ```xml
     <filter>
@@ -77,7 +77,7 @@ Nếu gặp phải lỗi này:
 
 Để sử dụng được chứng năng tìm kiếm ta cần mở PostgresSQL ở xampp lên
 
-![Lỗi](/src/img/315529214_5664478363600339_8477730918911989211_n.png 'Lỗi')
+![Lỗi](/img/315529214_5664478363600339_8477730918911989211_n.png 'Lỗi')
 
 -   Mở Chrome phục vụ chạy web bằng cách mở CMD lên và chạy đoạn code dưới (Lưu ý: Máy cần cài Chrome)
 
