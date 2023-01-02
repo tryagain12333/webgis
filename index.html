@@ -1,0 +1,189 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGIS</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <!-- npm install ol -->
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.1.0/dist/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css">
+
+    <!--  Link jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Link nội bộ -->
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/ol.css.map">
+
+    <script src="./js/ol.js.map"></script>
+    <script type="text/javascript" src="./js/search.js"></script>
+
+    <script type="text/javascript" src="./js/main.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid" style="min-height: 100vh;">
+        <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;">
+            <h1 class="py-3">BẢN ĐỒ BIỂN ĐẢO VIỆT NAM</h1>
+            <div style="min-width: 378px;">
+                <form>
+                    <div class="text-center">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="search" class="col-form-label">Tìm kiếm</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="search" id="search" onkeyup="showResult(this.value)" class="form-control"
+                                    aria-describedby="helpSearch" placeholder="Nhập tên đảo cần tìm kiếm">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div id="livesearch"></div>
+            </div>
+
+        </div>
+        <div id="info" class=""></div>
+
+
+        <div class="row">
+            <div class="col-6">
+                <div id="map" class="map shadow rounded"></div>
+            </div>
+            <div class="text-center col-6 shadow rounded">
+                <div class="row" style="justify-content: center;">
+                    <div class="col-2 shadow m-3 rounded" style="
+                    max-height: 273px; overflow-y: scroll;">
+                        <img src="http://localhost:8085/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=bienvahaidao:datlienpolygon"
+                            class="img-thumbnail" id="img-datlien_polygon" alt="">
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="
+                    max-height: 273px; overflow-y: scroll;">
+                        <img src="http://localhost:8085/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=bienvahaidao:datlienpolyline"
+                            class="img-thumbnail" id="img-datlien_polyline" alt="">
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="
+                    max-height: 273px; overflow-y: scroll;">
+                        <img src="http://localhost:8085/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=bienvahaidao:datlienpolypoint"
+                            class="img-thumbnail" id="img-datlien_point" alt="">
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="
+                    max-height: 273px; overflow-y: scroll;">
+                        <img src="http://localhost:8085/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=bienvahaidao:datlienanotation"
+                            class="img-thumbnail" id="img-datlien_anotation" alt="">
+                    </div>
+                </div>
+                <div class="row" style="justify-content: center;">
+                    <div class="col-2 shadow m-3 rounded" style="max-height: 82px;">
+                        <div class="form-switch" style="padding: 0;">
+                            <input type="checkbox" style="display: block; margin: 16px auto;" class="form-check-input"
+                                role="switch" name="" id="datlien_polygonCheck" checked>
+                            <label class="form-check-label" style="padding-bottom: 12px;" for="datlien_polygonCheck">Đất
+                                Liền Polygon</label>
+                        </div>
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="max-height: 82px;">
+                        <div class="form-switch" style="padding: 0;">
+                            <input type="checkbox" style="display: block; margin: 16px auto;" class="form-check-input"
+                                role="switch" name="" id="datlien_polylineCheck" checked>
+                            <label class="form-check-label" style="padding-bottom: 12px;"
+                                for="datlien_polylineCheck">Đất liền Polyline</label>
+                        </div>
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="max-height: 82px;">
+                        <div class="form-switch" style="padding: 0;">
+                            <input type="checkbox" style="display: block; margin: 16px auto;" class="form-check-input"
+                                role="switch" name="" id="datlien_pointCheck" checked>
+                            <label class="form-check-label" style="padding-bottom: 12px;" for="datline_pointCheck">Đất
+                                liền Point</label>
+                        </div>
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="max-height: 82px;">
+                        <div class="form-switch" style="padding: 0;">
+                            <input type="checkbox" style="display: block; margin: 16px auto;" class="form-check-input"
+                                role="switch" name="" id="datlien_anotationCheck" checked>
+                            <label class="form-check-label" style="padding-bottom: 12px;"
+                                for="datlien_anotationCheck">Đất liền anotation</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- BIỂN ĐẢO -->
+                <div class="row" style="justify-content: center;">
+                    <div class="col-2 shadow m-3 rounded" style="
+                    max-height: 273px; overflow-y: scroll;">
+                        <img src="http://localhost:8085/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=bienvahaidao:biendao_polygon"
+                            class="img-thumbnail" id="img-biendao_polygon" alt="">
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="
+                    max-height: 273px; overflow-y: scroll;">
+                        <img src="http://localhost:8085/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=bienvahaidao:biendao_polyline"
+                            class="img-thumbnail" id="img-biendao_polyline" alt="">
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="
+                    max-height: 273px; overflow-y: scroll;">
+                        <img src="http://localhost:8085/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=bienvahaidao:biendao_polypoint"
+                            class="img-thumbnail" id="img-biendao_point" alt="">
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="
+                    max-height: 273px; overflow-y: scroll;">
+                        <img src="http://localhost:8085/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=bienvahaidao:biendao_anotationn"
+                            class="img-thumbnail" id="img-biendao_anotation" alt="">
+                    </div>
+                </div>
+                <div class="row" style="justify-content: center;">
+                    <div class="col-2 shadow m-3 rounded" style="max-height: 82px;">
+                        <div class="form-switch" style="padding: 0;">
+                            <input type="checkbox" style="display: block; margin: 16px auto;" class="form-check-input"
+                                role="switch" name="" id="biendao_polygonCheck" checked>
+                            <label class="form-check-label" style="padding-bottom: 12px;"
+                                for="biendao_polygonCheck">Biển đảo Polygon</label>
+                        </div>
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="max-height: 82px;">
+                        <div class="form-switch" style="padding: 0;">
+                            <input type="checkbox" style="display: block; margin: 16px auto;" class="form-check-input"
+                                role="switch" name="" id="biendao_polylineCheck" checked>
+                            <label class="form-check-label" style="padding-bottom: 12px;"
+                                for="biendao_polylineCheck">Biển đảo Polyline</label>
+                        </div>
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="max-height: 82px;">
+                        <div class="form-switch" style="padding: 0;">
+                            <input type="checkbox" style="display: block; margin: 16px auto;" class="form-check-input"
+                                role="switch" name="" id="biendao_pointCheck" checked>
+                            <label class="form-check-label" style="padding-bottom: 12px;" for="datline_pointCheck">Biển
+                                đảo Point</label>
+                        </div>
+                    </div>
+                    <div class="col-2 shadow m-3 rounded" style="max-height: 82px;">
+                        <div class="form-switch" style="padding: 0;">
+                            <input type="checkbox" style="display: block; margin: 16px auto;" class="form-check-input"
+                                role="switch" name="" id="biendao_anotationCheck" checked>
+                            <label class="form-check-label" style="padding-bottom: 12px;"
+                                for="datlien_anotationCheck">Biển đảo anotation</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div id="popup" class="ol-popup">
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content"></div>
+</body>
+
+</html>
